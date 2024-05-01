@@ -16,10 +16,10 @@
     "@codemirror/autocomplete": "^6.16.0",
     "@codemirror/commands": "^6.5.0",
     "@codemirror/lang-markdown": "^6.2.5",
-    "@codemirror/lang-python": "^6.1.5",
+    "@codemirror/lang-python": "^6.1.6",
     "@codemirror/language": "^6.10.1",
     "@codemirror/language-data": "^6.5.1",
-    "@codemirror/lint": "^6.5.0",
+    "@codemirror/lint": "^6.7.0",
     "@codemirror/search": "^6.5.6",
     "@codemirror/state": "^6.4.1",
     "@codemirror/theme-one-dark": "^6.1.2",
@@ -72,7 +72,7 @@
     "@uidotdev/usehooks": "^2.4.1",
     "@uiw/codemirror-extensions-langs": "^4.22.0",
     "@uiw/react-codemirror": "^4.22.0",
-    "ai": "^3.0.35",
+    "ai": "^3.1.0",
     "ansi_up": "^6.0.2",
     "blob-polyfill": "^7.0.20220408",
     "class-variance-authority": "^0.7.0",
@@ -113,7 +113,7 @@
     "react-resizable-panels": "2.0.16",
     "react-use-event-hook": "^0.9.6",
     "react-vega": "^7.6.0",
-    "reactflow": "^11.11.2",
+    "reactflow": "^11.11.3",
     "rpc-anywhere": "^1.7.0",
     "string-dedent": "^3.0.1",
     "swiper": "^11.1.1",
@@ -125,7 +125,7 @@
     "vega-loader": "^4.5.1",
     "vscode-languageserver-protocol": "^3.17.5",
     "web-vitals": "^3.5.2",
-    "zod": "^3.23.4"
+    "zod": "^3.23.5"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -202,6 +202,6 @@
     "typescript": "^5.4.3",
     "vite": "^5.2.10",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^1.5.2"
+    "vitest": "^1.5.3"
   }
 }
