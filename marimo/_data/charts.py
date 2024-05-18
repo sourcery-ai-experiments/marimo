@@ -95,13 +95,12 @@ class StringChartBuilder(ChartBuilder):
                     alt.SortField({column}, order="ascending"),
                 ],
             )
-            .transform_calculate(
+            .transform_calculate(**{{
                 {column}: alt.expr.if_(
                     alt.datum.rank <= 10,
                     alt.datum[{column}],
                     "Other",
-                )
-            )
+            }}))
             .transform_filter(alt.datum.rank <= 11)
             .mark_bar()
             .encode(
@@ -220,16 +219,27 @@ class UnknownChartBuilder(ChartBuilder):
         """
 
 
+class ArgsAsStringChartBuilder(ChartBuilder):
+    def __init__(self, delegate: ChartBuilder):
+        self.delegate = delegate
+
+    def altair_json(self, data: Any, column: str) -> str:
+        return self.delegate.altair_json(data, f'"{column}"')
+
+    def altair_code(self, data: str, column: str) -> str:
+        return self.delegate.altair_code(f'"{data}"', f'"{column}"')
+
+
 def get_chart_builder(column_type: DataType) -> ChartBuilder:
     if column_type == "number":
-        return NumberChartBuilder()
+        return ArgsAsStringChartBuilder(NumberChartBuilder())
     if column_type == "string":
-        return StringChartBuilder()
+        return ArgsAsStringChartBuilder(StringChartBuilder())
     if column_type == "date":
-        return DateChartBuilder()
+        return ArgsAsStringChartBuilder(DateChartBuilder())
     if column_type == "boolean":
-        return BooleanChartBuilder()
+        return ArgsAsStringChartBuilder(BooleanChartBuilder())
     if column_type == "integer":
-        return IntegerChartBuilder()
+        return ArgsAsStringChartBuilder(IntegerChartBuilder())
     if column_type == "unknown":
-        return UnknownChartBuilder()
+        return ArgsAsStringChartBuilder(UnknownChartBuilder())

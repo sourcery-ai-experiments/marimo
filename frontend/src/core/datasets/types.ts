@@ -30,6 +30,7 @@ export type ColumnPreviewMap = ReadonlyMap<
   QualifiedColumn,
   {
     chart_spec?: JsonString;
+    chart_code?: string;
     error?: string;
     summary?: ColumnPreviewSummary;
   }

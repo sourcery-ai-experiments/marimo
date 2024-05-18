@@ -157,13 +157,7 @@ export function useMarimoWebSocket(opts: {
         addDatasets(msg.data);
         return;
       case "data-column-preview":
-        addColumnPreview({
-          table: msg.data.table_name,
-          column: msg.data.column_name,
-          chart_spec: msg.data.chart_spec,
-          error: msg.data.error,
-          summary: msg.data.summary,
-        });
+        addColumnPreview(msg.data);
         return;
 
       default:

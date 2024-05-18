@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, List, Literal, Optional, Union
-
-if TYPE_CHECKING:
-    from datetime import datetime
+from datetime import datetime  # noqa: TCH003
+from typing import List, Literal, Optional, Union
 
 DataType = Literal["string", "boolean", "integer", "number", "date", "unknown"]
 

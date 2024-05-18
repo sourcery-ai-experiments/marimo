@@ -60,17 +60,19 @@ const {
   addColumnPreview: (
     state,
     opts: {
-      table: string;
-      column: string;
+      table_name: string;
+      column_name: string;
       chart_spec?: JsonString;
+      chart_code?: string;
       error?: string;
       summary?: ColumnPreviewSummary;
     },
   ) => {
-    const tableColumn = `${opts.table}:${opts.column}` as const;
+    const tableColumn = `${opts.table_name}:${opts.column_name}` as const;
     const columnsPreviews = new Map(state.columnsPreviews);
     columnsPreviews.set(tableColumn, {
       chart_spec: opts.chart_spec,
+      chart_code: opts.chart_code,
       error: opts.error,
       summary: opts.summary,
     });

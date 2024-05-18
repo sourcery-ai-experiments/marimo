@@ -290,6 +290,7 @@ export type OperationMessage =
         table_name: string;
         column_name: string;
         chart_spec?: JsonString;
+        chart_code?: string;
         error?: string;
         summary?: ColumnPreviewSummary;
       };

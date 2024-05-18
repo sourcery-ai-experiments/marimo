@@ -56,6 +56,6 @@ def _get_altair_chart(
         table.data,
         request.column_name,
     ), chart_builder.altair_code(
-        table.data,
+        request.table_name,
         request.column_name,
     )

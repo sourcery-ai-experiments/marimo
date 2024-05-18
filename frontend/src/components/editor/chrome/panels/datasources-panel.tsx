@@ -4,7 +4,6 @@ import {
   ChevronRightIcon,
   DatabaseIcon,
   PlusSquareIcon,
-  RefreshCcw,
   XIcon,
 } from "lucide-react";
 import type { DataTable, DataTableColumn } from "@/core/network/types";
@@ -18,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { useCellActions } from "@/core/cells/cells";
 import { lastFocusedCellIdAtom } from "@/core/cells/focus";
 import { useAtomValue } from "jotai";
-import { chartColumn } from "@/core/datasets/chart-column";
 import { Tooltip } from "@/components/ui/tooltip";
 import { PanelEmptyState } from "./empty-state";
 import { previewDatasetColumn } from "@/core/network/requests";
@@ -52,9 +50,9 @@ export const DataSourcesPanel: React.FC = () => {
     );
   }
 
-  const handleAddColumn = (table: DataTable, column: DataTableColumn) => {
+  const handleAddColumn = (chartCode: string) => {
     createNewCell({
-      code: chartColumn(table, column).code,
+      code: chartCode,
       before: false,
       cellId: lastFocusedCellId ?? "__end__",
     });
@@ -68,6 +66,8 @@ export const DataSourcesPanel: React.FC = () => {
     });
   };
 
+  const hasSearch = !!searchValue.trim();
+
   return (
     <div className="flex-1 overflow-hidden">
       <Command className={cn("border-b rounded-none", "h-full")}>
@@ -79,7 +79,7 @@ export const DataSourcesPanel: React.FC = () => {
             onValueChange={setSearchValue}
             rootClassName="flex-1 border-r"
           />
-          {Boolean(searchValue.trim()) && (
+          {hasSearch && (
             <button
               type="button"
               className="float-right border-b px-2 m-0 h-full hover:bg-accent hover:text-accent-foreground"
@@ -91,7 +91,7 @@ export const DataSourcesPanel: React.FC = () => {
         </div>
 
         <TableList
-          onAddColumn={handleAddColumn}
+          onAddColumnChart={handleAddColumn}
           onAddTable={handleAddTable}
           onExpandColumn={(table, column) => {
             const tableColumn = `${table.name}:${column.name}` as const;
@@ -112,10 +112,10 @@ export const DataSourcesPanel: React.FC = () => {
           }}
           columnPreviews={columnsPreviews}
           tables={tables}
-          isSearching={!!searchValue.trim()}
+          isSearching={hasSearch}
           isTableExpanded={(table) => {
             // Always show tables if there is a search value
-            if (searchValue.trim()) {
+            if (hasSearch) {
               return true;
             }
             return expandedTables.has(table.name);
@@ -131,7 +131,7 @@ export const DataSourcesPanel: React.FC = () => {
 };
 
 const TableList: React.FC<{
-  onAddColumn: (table: DataTable, column: DataTableColumn) => void;
+  onAddColumnChart: (chartCode: string) => void;
   onAddTable: (table: DataTable) => void;
   onExpandTable: (table: DataTable) => void;
   onExpandColumn: (table: DataTable, column: DataTableColumn) => void;
@@ -142,9 +142,8 @@ const TableList: React.FC<{
   tables: DataTable[];
 }> = ({
   tables,
-  isSearching,
   columnPreviews,
-  onAddColumn,
+  onAddColumnChart,
   onAddTable,
   onExpandTable,
   onExpandColumn,
@@ -175,13 +174,13 @@ const TableList: React.FC<{
                     table={table}
                     column={column}
                     onExpandColumn={onExpandColumn}
-                    onAddColumn={onAddColumn}
                     isExpanded={isColumnExpanded(table, column)}
                   />
                   {isColumnExpanded(table, column) && (
                     <div className="pl-10 pr-2 py-2 bg-muted/20 shadow-inner border-b">
                       <ErrorBoundary>
                         <DatasetColumnPreview
+                          onAddColumnChart={onAddColumnChart}
                           preview={columnPreviews.get(
                             `${table.name}:${column.name}`,
                           )}
@@ -254,9 +253,9 @@ const DatasetColumnItem: React.FC<{
   table: DataTable;
   column: DataTableColumn;
   onExpandColumn: (table: DataTable, column: DataTableColumn) => void;
-  onAddColumn: (table: DataTable, column: DataTableColumn) => void;
+  // onAddColumnChart: (code: string) => void;
   isExpanded: boolean;
-}> = ({ table, column, onExpandColumn, onAddColumn }) => {
+}> = ({ table, column, onExpandColumn }) => {
   const Icon = DATA_TYPE_ICON[column.type];
 
   return (
@@ -283,16 +282,6 @@ const DatasetColumnItem: React.FC<{
           />
         </Button>
       </Tooltip>
-      <Tooltip content="Add chart to notebook" delayDuration={400}>
-        <Button
-          variant="text"
-          size="icon"
-          className="group-hover:opacity-100 opacity-0 hover:bg-muted text-muted-foreground hover:text-foreground"
-          onClick={Events.stopPropagation(() => onAddColumn(table, column))}
-        >
-          <PlusSquareIcon className="h-3 w-3" />
-        </Button>
-      </Tooltip>
     </CommandItem>
   );
 };
@@ -302,14 +291,16 @@ const LazyVegaLite = React.lazy(() =>
 );
 
 const DatasetColumnPreview: React.FC<{
+  onAddColumnChart: (code: string) => void;
   preview:
     | {
         chart_spec?: JsonString;
+        chart_code?: string;
         error?: string;
         summary?: ColumnPreviewSummary;
       }
     | undefined;
-}> = ({ preview }) => {
+}> = ({ preview, onAddColumnChart }) => {
   if (!preview) {
     return <span className="text-xs text-muted-foreground">Loading...</span>;
   }
@@ -356,8 +347,24 @@ const DatasetColumnPreview: React.FC<{
     />
   ) : null;
 
+  const addChart = preview.chart_code ? (
+    <Tooltip content="Add chart to notebook" delayDuration={400}>
+      <Button
+        variant="outline"
+        size="icon"
+        className="z-10 bg-background absolute right-1 top-0"
+        onClick={Events.stopPropagation(() =>
+          onAddColumnChart(preview.chart_code || ""),
+        )}
+      >
+        <PlusSquareIcon className="h-3 w-3" />
+      </Button>
+    </Tooltip>
+  ) : null;
+
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 relative">
+      {addChart}
       {chart}
       {summary}
     </div>
