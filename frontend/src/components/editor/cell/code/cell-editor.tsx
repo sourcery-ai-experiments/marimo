@@ -13,10 +13,14 @@ import React, {
 
 import { setupCodeMirror } from "@/core/codemirror/cm";
 import useEvent from "react-use-event-hook";
-import { CellActions, useCellActions } from "@/core/cells/cells";
-import { CellRuntimeState, CellData, CellConfig } from "@/core/cells/types";
-import { UserConfig } from "@/core/config/config-schema";
-import { Theme } from "@/theme/useTheme";
+import { type CellActions, useCellActions } from "@/core/cells/cells";
+import type {
+  CellRuntimeState,
+  CellData,
+  CellConfig,
+} from "@/core/cells/types";
+import type { UserConfig } from "@/core/config/config-schema";
+import type { Theme } from "@/theme/useTheme";
 import {
   LanguageAdapters,
   getInitialLanguageAdapter,
@@ -33,7 +37,7 @@ import { useAtom, useSetAtom } from "jotai";
 import { aiCompletionCellAtom } from "@/core/ai/state";
 import { mergeRefs } from "@/utils/mergeRefs";
 import { lastFocusedCellIdAtom } from "@/core/cells/focus";
-import { LanguageAdapter } from "@/core/codemirror/language/types";
+import type { LanguageAdapter } from "@/core/codemirror/language/types";
 
 export interface CellEditorProps
   extends Pick<CellRuntimeState, "status">,

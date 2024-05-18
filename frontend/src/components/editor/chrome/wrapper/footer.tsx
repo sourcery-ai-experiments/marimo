@@ -45,6 +45,13 @@ export const Footer: React.FC = () => {
         {renderIcon("variables")}
       </FooterItem>
       <FooterItem
+        tooltip="Data sources"
+        selected={selectedPanel === "datasources"}
+        onClick={() => openApplication("datasources")}
+      >
+        {renderIcon("datasources")}
+      </FooterItem>
+      <FooterItem
         tooltip="Explore dependencies"
         selected={selectedPanel === "dependencies"}
         onClick={() => openApplication("dependencies")}

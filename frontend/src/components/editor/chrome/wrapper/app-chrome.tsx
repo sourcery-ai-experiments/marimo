@@ -1,10 +1,10 @@
 /* Copyright 2024 Marimo. All rights reserved. */
-import React, { PropsWithChildren, useEffect } from "react";
+import React, { type PropsWithChildren, useEffect } from "react";
 import {
   PanelGroup,
   Panel,
   PanelResizeHandle,
-  ImperativePanelHandle,
+  type ImperativePanelHandle,
 } from "react-resizable-panels";
 import { Footer } from "./footer";
 import "./app-chrome.css";
@@ -22,6 +22,7 @@ import { DocumentationPanel } from "../panels/documentation-panel";
 import { FileExplorerPanel } from "../panels/file-explorer-panel";
 import { SnippetsPanel } from "../panels/snippets-panel";
 import { ErrorBoundary } from "../../boundary/ErrorBoundary";
+import { DataSourcesPanel } from "../panels/datasources-panel";
 
 export const AppChrome: React.FC<PropsWithChildren> = ({ children }) => {
   const { isOpen, selectedPanel } = useChromeState();
@@ -96,6 +97,7 @@ export const AppChrome: React.FC<PropsWithChildren> = ({ children }) => {
       {selectedPanel === "files" && <FileExplorerPanel />}
       {selectedPanel === "errors" && <ErrorsPanel />}
       {selectedPanel === "variables" && <VariablePanel />}
+      {selectedPanel === "datasources" && <DataSourcesPanel />}
       {selectedPanel === "dependencies" && <DependencyGraphPanel />}
       {selectedPanel === "outline" && <OutlinePanel />}
       {selectedPanel === "documentation" && <DocumentationPanel />}

@@ -6,11 +6,11 @@ import { useWebSocket } from "@/core/websocket/useWebSocket";
 import { logNever } from "@/utils/assertNever";
 import { useCellActions } from "@/core/cells/cells";
 import { AUTOCOMPLETER } from "@/core/codemirror/completion/Autocompleter";
-import { OperationMessage } from "@/core/kernel/messages";
-import { CellData } from "../cells/types";
+import type { OperationMessage } from "@/core/kernel/messages";
+import type { CellData } from "../cells/types";
 import { useErrorBoundary } from "react-error-boundary";
 import { Logger } from "@/utils/Logger";
-import { LayoutState, useLayoutActions } from "../layout/layout";
+import { type LayoutState, useLayoutActions } from "../layout/layout";
 import { useVariablesActions } from "../variables/state";
 import { toast } from "@/components/ui/use-toast";
 import { renderHTML } from "@/plugins/core/RenderHTML";
@@ -19,7 +19,7 @@ import { prettyError } from "@/utils/errors";
 import { isStaticNotebook } from "../static/static-state";
 import { useRef } from "react";
 import { jsonParseWithSpecialChar } from "@/utils/json/json-parser";
-import { SessionId } from "../kernel/session";
+import type { SessionId } from "../kernel/session";
 import { useBannersActions } from "../errors/state";
 import { useAlertActions } from "../alerts/state";
 import { generateUUID } from "@/utils/uuid";
@@ -31,7 +31,8 @@ import {
   handleRemoveUIElements,
 } from "../kernel/handlers";
 import { queryParamHandlers } from "../kernel/queryParamHandlers";
-import { JsonString } from "@/utils/json/base64";
+import type { JsonString } from "@/utils/json/base64";
+import { useDatasetsActions } from "../datasets/state";
 
 /**
  * WebSocket that connects to the Marimo kernel and handles incoming messages.
@@ -49,6 +50,8 @@ export function useMarimoWebSocket(opts: {
   const { handleCellMessage } = useCellActions();
   const setAppConfig = useSetAppConfig();
   const { setVariables, setMetadata } = useVariablesActions();
+  const { addColumnPreview } = useDatasetsActions();
+  const { addDatasets } = useDatasetsActions();
   const { setLayoutData } = useLayoutActions();
   const [connection, setConnection] = useAtom(connectionAtom);
   const { addBanner } = useBannersActions();
@@ -148,6 +151,19 @@ export function useMarimoWebSocket(opts: {
 
       case "query-params-clear":
         queryParamHandlers.clear();
+        return;
+
+      case "datasets":
+        addDatasets(msg.data);
+        return;
+      case "data-column-preview":
+        addColumnPreview({
+          table: msg.data.table_name,
+          column: msg.data.column_name,
+          chart_spec: msg.data.chart_spec,
+          error: msg.data.error,
+          summary: msg.data.summary,
+        });
         return;
 
       default:
