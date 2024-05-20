@@ -18,7 +18,10 @@ import {
   CopyIcon,
   ImageIcon,
   ScissorsIcon,
+  SearchIcon,
 } from "lucide-react";
+import { useVariables } from "@/core/variables/state";
+import { goToDefinition } from "@/core/codemirror/go-to-definition";
 
 interface Props extends CellActionButtonProps {
   children: React.ReactNode;
@@ -26,6 +29,7 @@ interface Props extends CellActionButtonProps {
 
 export const CellActionsContextMenu = ({ children, ...props }: Props) => {
   const actions = useCellActionButtons({ cell: props });
+  const variables = useVariables();
   const [imageRightClicked, setImageRightClicked] =
     React.useState<HTMLImageElement>();
 
@@ -78,6 +82,17 @@ export const CellActionsContextMenu = ({ children, ...props }: Props) => {
           link.download = "image.png";
           link.href = imageRightClicked.src;
           link.click();
+        }
+      },
+    },
+    {
+      label: "Go to Definition",
+      icon: <SearchIcon size={13} strokeWidth={1.5} />,
+      handle: () => {
+        const { getEditorView } = props;
+        const editorView = getEditorView();
+        if (editorView) {
+          goToDefinition(editorView, variables);
         }
       },
     },

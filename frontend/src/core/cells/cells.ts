@@ -156,7 +156,12 @@ const {
 } = createReducerAndAtoms(initialNotebookState, {
   createNewCell: (
     state,
-    action: { cellId: CellId | "__end__"; before: boolean; code?: string, newCellId?: CellId},
+    action: {
+      cellId: CellId | "__end__";
+      before: boolean;
+      code?: string;
+      newCellId?: CellId;
+    },
   ) => {
     const { cellId, before, code } = action;
     let { newCellId } = action;
@@ -248,7 +253,7 @@ const {
       cellId: focusCellId,
       cell: state.cellHandles[focusCellId],
       config: state.cellData[focusCellId].config,
-      codeFocus: before ? "bottom" : "top",
+      codeFocus: before ? "<<bottom>>" : "<<top>>",
     });
     return state;
   },
